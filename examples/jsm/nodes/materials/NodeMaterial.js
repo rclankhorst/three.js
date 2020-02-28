@@ -48,7 +48,7 @@ function NodeMaterial( vertex, fragment ) {
 
 	this.onBeforeCompile.toString = function () {
 
-		return scope.needsCompile;
+		return scope.version;
 
 	};
 
