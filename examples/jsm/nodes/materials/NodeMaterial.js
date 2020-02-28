@@ -40,7 +40,6 @@ function NodeMaterial( vertex, fragment ) {
 			shader.vertexShader = this.vertexShader;
 			shader.fragmentShader = this.fragmentShader;
 			
-			this.needsUpdate = false;
 
 		}
 
@@ -50,7 +49,7 @@ function NodeMaterial( vertex, fragment ) {
 
 	this.onBeforeCompile.toString = function () {
 
-		return self.needsCompile;
+		return self.version;
 
 	};
 
