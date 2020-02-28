@@ -39,6 +39,8 @@ function NodeMaterial( vertex, fragment ) {
 			shader.uniforms = this.uniforms;
 			shader.vertexShader = this.vertexShader;
 			shader.fragmentShader = this.fragmentShader;
+			
+			this.needsUpdate = false;
 
 		}
 
