@@ -10,10 +10,7 @@ var _points = [
 	new Vector3(),
 	new Vector3()
 ];
-
 var _vector = new Vector3();
-
-var _box = new Box3();
 
 // triangle centered vertices
 
@@ -43,7 +40,6 @@ function Box3( min, max ) {
 	this.max = ( max !== undefined ) ? max : new Vector3( - Infinity, - Infinity, - Infinity );
 
 }
-
 
 Object.assign( Box3.prototype, {
 
@@ -244,6 +240,8 @@ Object.assign( Box3.prototype, {
 
 	expandByObject: function ( object ) {
 
+		var i, l;
+
 		// Computes the world-axis-aligned bounding box of an object (including its children),
 		// accounting for both the object's, and children's, world transforms
 
@@ -253,23 +251,44 @@ Object.assign( Box3.prototype, {
 
 		if ( geometry !== undefined ) {
 
-			if ( geometry.boundingBox === null ) {
+			if ( geometry.isGeometry ) {
 
-				geometry.computeBoundingBox();
+				var vertices = geometry.vertices;
+
+				for ( i = 0, l = vertices.length; i < l; i ++ ) {
+
+					_vector.copy( vertices[ i ] );
+					_vector.applyMatrix4( object.matrixWorld );
+
+					this.expandByPoint( _vector );
+
+				}
+
+			} else if ( geometry.isBufferGeometry ) {
+
+				var attribute = geometry.attributes.position;
+
+				if ( attribute !== undefined ) {
+
+					for ( i = 0, l = attribute.count; i < l; i ++ ) {
+
+						_vector.fromBufferAttribute( attribute, i ).applyMatrix4( object.matrixWorld );
+
+						this.expandByPoint( _vector );
+
+					}
+
+				}
 
 			}
 
-			_box.copy( geometry.boundingBox );
-			_box.applyMatrix4( object.matrixWorld );
-
-			this.expandByPoint( _box.min );
-			this.expandByPoint( _box.max );
-
 		}
+
+		//
 
 		var children = object.children;
 
-		for ( var i = 0, l = children.length; i < l; i ++ ) {
+		for ( i = 0, l = children.length; i < l; i ++ ) {
 
 			this.expandByObject( children[ i ] );
 
